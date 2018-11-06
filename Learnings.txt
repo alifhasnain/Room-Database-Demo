@@ -1,0 +1,6 @@
+1. Hide keyboard inside a fragment
+2. Multiple Button on click listener
+3. Annotation for primary key
+4. Fragment
+5. Splash Screen with background thread
+6. Hide ActionBar with theme
