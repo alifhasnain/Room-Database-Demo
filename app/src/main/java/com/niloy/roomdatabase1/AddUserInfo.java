@@ -1,11 +1,19 @@
 package com.niloy.roomdatabase1;
 
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +22,13 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import static android.app.Activity.RESULT_OK;
 
 
 /**
@@ -21,12 +36,15 @@ import android.widget.EditText;
  */
 public class AddUserInfo extends Fragment {
 
-    EditText name;
-    EditText age;
-    EditText id;
-    EditText email;
+    TextInputLayout name;
+    TextInputLayout age;
+    TextInputLayout id;
+    TextInputLayout email;
+    ImageView profile;
 
     Button save;
+    Uri imageUri;
+    AlertDialog dialog;
 
     public AddUserInfo() {
         // Required empty public constructor
@@ -44,27 +62,59 @@ public class AddUserInfo extends Fragment {
         id = view.findViewById(R.id.id);
         email = view.findViewById(R.id.email_address);
         save = view.findViewById(R.id.save);
+        profile = view.findViewById(R.id.profile_image);
+
+        profile.setOnClickListener(new View.OnClickListener() {
+
+            String[] items = {"Camera", "Gallery"};
+
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder mDialog = new AlertDialog.Builder(getContext());
+                mDialog.setTitle("Select an option");
+                mDialog.setSingleChoiceItems(items , -1, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        Intent intent = new Intent(getActivity() , ImagePicker.class);
+
+                        if(items[i].equals("Camera"))   {
+                            intent.putExtra("choice" , 0);
+                        }
+                        else {
+                            intent.putExtra("choice" , 1);
+                        }
+
+                        startActivityForResult(intent , 2);
+                    }
+                });
+                dialog = mDialog.create();
+                dialog.show();
+            }
+        });
+
+
 
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                String userName = name.getText().toString();
+                String userName = name.getEditText().getText().toString();
 
                 int userAge;
 
                 try {
-                    userAge = Integer.parseInt(age.getText().toString());
+                    userAge = Integer.parseInt(age.getEditText().getText().toString());
                 }
                 catch (Exception e) {
                     userAge = 0;
                     e.printStackTrace();
                 }
 
-                String userId = id.getText().toString();
-                String userMail = email.getText().toString();
+                String userId = id.getEditText().getText().toString();
+                String userMail = email.getEditText().getText().toString();
 
-                if(!userName.isEmpty() && userAge>0 && !userId.isEmpty() && !userMail.isEmpty())    {
+                if(!userName.isEmpty() && userName.length()<25 && userAge>0 && !userId.isEmpty() && !userMail.isEmpty() && profile!=null)    {
 
                     Info userInfos = new Info();
 
@@ -72,6 +122,12 @@ public class AddUserInfo extends Fragment {
                     userInfos.setAge(userAge);
                     userInfos.setId(userId);
                     userInfos.setEmail(userMail);
+                    //Add Image
+                    Bitmap bitmap = ((BitmapDrawable) profile.getDrawable()).getBitmap();
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                    byte[] imageInByte = baos.toByteArray();
+                    userInfos.setImage(imageInByte);
 
                     MainActivity.database.myDao().addInfos(userInfos);
 
@@ -81,10 +137,12 @@ public class AddUserInfo extends Fragment {
 
                     Snackbar.make(view , "Data Added Successfully" , 2000).show();
 
-                    name.setText("");
-                    age.setText("");
-                    id.setText("");
-                    email.setText("");
+                    name.getEditText().setText("");
+                    age.getEditText().setText("");
+                    id.getEditText().setText("");
+                    email.getEditText().setText("");
+                    profile.setImageResource(R.drawable.profile);
+
                 }
                 else    {
                     //This will hide keyboard
@@ -97,4 +155,38 @@ public class AddUserInfo extends Fragment {
         return view;
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode)
+        {
+            case 2:
+                if(resultCode==RESULT_OK)   {
+                    imageUri = data.getData();
+                    resizeAndSetImage(imageUri);
+                    //profile.setImageURI(imageUri);
+                }
+                else if(resultCode==420) {
+                    Toast.makeText(getContext() , "No image was selected!", Toast.LENGTH_SHORT).show();
+                }
+                if(dialog.isShowing())  {
+                    dialog.cancel();
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void resizeAndSetImage(Uri imageUri)    {
+        String path = "";
+        try {
+            Bitmap myImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver() , imageUri);
+            int h = myImage.getHeight();
+            int w = myImage.getWidth();
+            Bitmap resizedImage = Bitmap.createScaledBitmap(myImage , w/3 , h/3 , true);
+            profile.setImageBitmap(resizedImage);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -1,7 +1,12 @@
 package com.niloy.roomdatabase1;
 
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,6 +44,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener  {
 
         add.setOnClickListener(this);
         viewUsers.setOnClickListener(this);
+        askPermission();
         return view;
     }
 
@@ -58,5 +64,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener  {
                 break;
         }
 
+    }
+
+    public void askPermission() {
+        if(Build.VERSION.SDK_INT >= 23) {
+            ActivityCompat.requestPermissions( getActivity() , new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
+        }
     }
 }

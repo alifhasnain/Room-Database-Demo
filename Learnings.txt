@@ -4,3 +4,6 @@
 4. Fragment
 5. Splash Screen with background thread
 6. Hide ActionBar with theme
+7. TextInputLayout
+8. TextInputEditLayoutLayout
+9. Save image using room presistance library

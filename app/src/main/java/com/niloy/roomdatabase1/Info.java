@@ -20,15 +20,20 @@ public class Info {
     @ColumnInfo(name = "user_email")
     private String email;
 
+    @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
+    @NonNull
+    private byte[] image;
+
     public Info() {
 
     }
 
-    public Info(String name, int age, String id, String email ) {
+    public Info(String name, int age, @NonNull String id, String email, byte[] image) {
         this.name = name;
         this.age = age;
         this.id = id;
         this.email = email;
+        this.image = image;
     }
 
     public String getName() {
@@ -63,4 +68,11 @@ public class Info {
         this.email = email;
     }
 
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
 }

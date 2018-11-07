@@ -1,12 +1,15 @@
 package com.niloy.roomdatabase1;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -20,18 +23,20 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private ArrayList<String> mAges;
     private ArrayList<String> mId;
     private ArrayList<String> emails;
+    private ArrayList<byte[]> imageByteArrays;
 
-    public static Info temp;
+    static Info temp;
 
     private Context mContext ;
 
     //This is the constructor
-    public RecyclerViewAdapter(Context mContext , ArrayList<String> mNames, ArrayList<String> mAges, ArrayList<String> mId, ArrayList<String> emails) {
+    public RecyclerViewAdapter(Context mContext , ArrayList<String> mNames, ArrayList<String> mAges, ArrayList<String> mId, ArrayList<String> emails , ArrayList<byte[]> images) {
+        this.mContext = mContext;
         this.mNames = mNames;
         this.mAges = mAges;
         this.mId = mId;
         this.emails = emails;
-        this.mContext = mContext;
+        this.imageByteArrays = images;
     }
 
 
@@ -44,18 +49,23 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(final ViewHolder viewHolder, final int i) {
+
         Log.d(TAG,"onBindViewHolder: called.");
 
+        //Convert byte[] to imageView
+        Bitmap bitmap = BitmapFactory.decodeByteArray(imageByteArrays.get(i) ,0 , imageByteArrays.get(i).length);
+
         viewHolder.name.setText(mNames.get(i));
-        viewHolder.age.setText(mAges.get(i));
-        viewHolder.id.setText(mId.get(i));
-        viewHolder.email.setText(emails.get(i));
+        viewHolder.age.setText("Age : " + mAges.get(i));
+        viewHolder.id.setText("ID : " + mId.get(i));
+        viewHolder.email.setText("Email : " + emails.get(i));
+        viewHolder.profile.setImageBitmap(bitmap);
 
         viewHolder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                temp = new Info(mNames.get(i) , Integer.parseInt(mAges.get(i)) , mId.get(i) , emails.get(i));
+                temp = new Info(mNames.get(i) , Integer.parseInt(mAges.get(i)) , mId.get(i) , emails.get(i) , imageByteArrays.get(i) );
 
                 MainActivity.fragmentManager.beginTransaction().replace(R.id.fragment_container , new EditInfo())
                         .addToBackStack(null).commit();
@@ -85,6 +95,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         TextView age;
         TextView id;
         TextView email;
+        ImageView profile;
 
         RelativeLayout relativeLayout;
 
@@ -95,6 +106,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             age = itemView.findViewById(R.id.age);
             id = itemView.findViewById(R.id.id);
             email = itemView.findViewById(R.id.email);
+            profile = itemView.findViewById(R.id.profile_image);
 
             relativeLayout = itemView.findViewById(R.id.relative_layout);
         }

@@ -36,6 +36,7 @@ public class ViewUsers extends Fragment {
     static ArrayList<String> readAge;
     static ArrayList<String> readId;
     static ArrayList<String> readEmail;
+    static ArrayList<byte[]> readImages;
 
     public ViewUsers() {
         // Required empty public constructor
@@ -59,16 +60,18 @@ public class ViewUsers extends Fragment {
         readAge = new ArrayList<>();
         readId = new ArrayList<>();
         readEmail = new ArrayList<>();
+        readImages = new ArrayList<>();
 
         for(Info i : allInfos)    {
             readNames.add(i.getName());
             readAge.add(Integer.toString(i.getAge()));
             readId.add(i.getId());
             readEmail.add(i.getEmail());
+            readImages.add(i.getImage());
         }
 
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
-        adapter = new RecyclerViewAdapter(getActivity() , readNames , readAge , readId , readEmail );
+        adapter = new RecyclerViewAdapter(getActivity() , readNames , readAge , readId , readEmail , readImages );
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -92,12 +95,14 @@ public class ViewUsers extends Fragment {
                         readAge.clear();
                         readId.clear();
                         readEmail.clear();
+                        readImages.clear();
 
                         for(Info i : allInfos)    {
                             readNames.add(i.getName());
                             readAge.add(Integer.toString(i.getAge()));
                             readId.add(i.getId());
                             readEmail.add(i.getEmail());
+                            readImages.add(i.getImage());
                         }
                         adapter.notifyDataSetChanged();
                     }
