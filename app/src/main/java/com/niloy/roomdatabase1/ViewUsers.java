@@ -3,23 +3,15 @@ package com.niloy.roomdatabase1;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Canvas;
-import android.graphics.ColorFilter;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,6 +62,7 @@ public class ViewUsers extends Fragment {
             readImages.add(i.getImage());
         }
 
+        Toast.makeText(getActivity(), "Click To Edit\nLong Click To Delete", Toast.LENGTH_SHORT).show();
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         adapter = new RecyclerViewAdapter(getActivity() , readNames , readAge , readId , readEmail , readImages );
         recyclerView.setAdapter(adapter);
