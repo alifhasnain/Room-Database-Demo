@@ -15,15 +15,17 @@ public class SplashScreen extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen);
 
         TextView splashText = findViewById(R.id.splashText);
+        TextView splashText2 = findViewById(R.id.splashText2);
 
         splashText.animate().alpha(1f).setDuration(2000);
+        splashText2.animate().alpha(1f).setDuration(2000);
 
         //This is for Splash Screen Of App
         Thread splashScreenThread = new Thread()    {
             @Override
             public void run() {
                 try {
-                    sleep(4000);
+                    sleep(3000);
                     Intent intent = new Intent(SplashScreen.this , MainActivity.class);
                     startActivity(intent);
                     finish();
