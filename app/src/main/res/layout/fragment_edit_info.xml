@@ -48,7 +48,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/upload" />
+            android:src="@drawable/upload"
+            app:civ_border_width="3dp"
+            app:civ_border_color="#d81b60"/>
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/name"
