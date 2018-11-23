@@ -26,9 +26,9 @@
             android:layout_marginRight="7dp"
             android:foregroundGravity="center_vertical"
             android:scaleType="centerCrop"
-            app:civ_border_width="3dp"
+            android:src="@drawable/profile"
             app:civ_border_color="#d81b60"
-            android:src="@drawable/profile" />
+            app:civ_border_width="3dp" />
 
         <RelativeLayout
             android:id="@+id/relative_layout2"
