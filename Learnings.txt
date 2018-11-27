@@ -7,4 +7,7 @@
 7. TextInputLayout
 8. TextInputEditLayoutLayout
 9. Save image using room presistance library
-10.Animation Drawable 
+10. Animation Drawable 
+11. Swipe to delete
+12. Snackbar with object and Snackbar callback
+13. Double tap back key to exit in fragment

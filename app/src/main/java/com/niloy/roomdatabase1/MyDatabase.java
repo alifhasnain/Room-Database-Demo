@@ -1,7 +1,7 @@
 package com.niloy.roomdatabase1;
 
-import android.arch.persistence.room.Database;
-import android.arch.persistence.room.RoomDatabase;
+import androidx.room.Database;
+import androidx.room.RoomDatabase;
 
 @Database(entities = {Info.class} , version = 1)
 public abstract class MyDatabase extends RoomDatabase {

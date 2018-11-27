@@ -3,8 +3,8 @@ package com.niloy.roomdatabase1;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +24,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private ArrayList<String> mId;
     private ArrayList<String> emails;
     private ArrayList<byte[]> imageByteArrays;
+    RelativeLayout foreground,background;
 
     static Info temp;
 
@@ -73,7 +74,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             }
         });
 
-        viewHolder.relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
+        /*viewHolder.relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 Info info = new Info();
@@ -81,7 +82,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 ViewUsers.deleteDataItemAndRefreshRecyclerView(info , mContext);
                 return true;
             }
-        });
+        });*/
     }
 
     @Override
@@ -107,6 +108,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             id = itemView.findViewById(R.id.id);
             email = itemView.findViewById(R.id.email);
             profile = itemView.findViewById(R.id.profile_image);
+            background = itemView.findViewById(R.id.background_delete_ic_area);
 
             relativeLayout = itemView.findViewById(R.id.relative_layout);
         }
