@@ -125,7 +125,8 @@ public class AddUserInfo extends Fragment {
                     byte[] imageInByte = baos.toByteArray();
                     userInfos.setImage(imageInByte);
 
-                    MainActivity.database.myDao().addInfos(userInfos);
+                    //MainActivity.database.myDao().addInfos(userInfos);
+                    DatabaseOperationInThread.addData(userInfos);
 
                     //This will hide keyboard
                     InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);

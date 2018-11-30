@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
         fragmentManager = getSupportFragmentManager();
 
-        database = Room.databaseBuilder(getApplicationContext() , MyDatabase.class , "userdb").allowMainThreadQueries().build();
+        database = Room.databaseBuilder(getApplicationContext() , MyDatabase.class , "userdb").build();
 
         if(findViewById(R.id.fragment_container)!=null) {
 

@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.ItemTouchHelper;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +41,8 @@ public class ViewUsers extends Fragment implements RecyclerItemTouchHelper.Recyc
     static ArrayList<String> readEmail;
     static ArrayList<byte[]> readImages;
 
+    View view;
+
     RecyclerView recyclerView;
 
     public ViewUsers() {
@@ -50,7 +54,7 @@ public class ViewUsers extends Fragment implements RecyclerItemTouchHelper.Recyc
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_view_users, container, false);
+        view = inflater.inflate(R.layout.fragment_view_users, container, false);
         recyclerView = view.findViewById(R.id.recycler_view);
         showRecyclerView(view);
 
@@ -59,13 +63,24 @@ public class ViewUsers extends Fragment implements RecyclerItemTouchHelper.Recyc
 
     public void showRecyclerView(View view) {
 
-        List<Info> allInfos = MainActivity.database.myDao().readUsers();
+        //List<Info> allInfos = MainActivity.database.myDao().readUsers();
+
+        List<Info> allInfos = null;
+
+        try {
+            allInfos = DatabaseOperationInThread.readAllUsers();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(getContext(), "No Data Available!", Toast.LENGTH_SHORT).show();
+        }
 
         readNames = new ArrayList<>();
         readAge = new ArrayList<>();
         readId = new ArrayList<>();
         readEmail = new ArrayList<>();
         readImages = new ArrayList<>();
+
 
         for(Info i : allInfos)    {
             readNames.add(i.getName());
@@ -174,7 +189,10 @@ public class ViewUsers extends Fragment implements RecyclerItemTouchHelper.Recyc
                 super.onDismissed(transientBottomBar, event);
                 if(event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT)    {
                     //This is going to delete item from database
-                    MainActivity.database.myDao().deleteItem(info);
+                    //MainActivity.database.myDao().deleteItem(info);
+                    DatabaseOperationInThread.deleteData(info);
+                    adapter.notifyDataSetChanged();
+                    adapter.notifyItemChanged(position);
                 }
             }
         });

@@ -59,7 +59,7 @@
                 android:foregroundGravity="center_vertical"
                 android:scaleType="centerCrop"
                 android:src="@drawable/profile"
-                app:civ_border_color="#d81b60"
+                app:civ_border_color="@color/design_default_color_primary"
                 app:civ_border_width="3dp" />
 
             <RelativeLayout

@@ -112,7 +112,8 @@ public class EditInfo extends Fragment {
 
 
                 Info temp = new Info(name.getEditText().getText().toString() , Integer.parseInt(age.getEditText().getText().toString()) , id.getEditText().getText().toString() , email.getEditText().getText().toString() , image);
-                MainActivity.database.myDao().updateItem(temp);
+                //MainActivity.database.myDao().updateItem(temp);
+                DatabaseOperationInThread.updateData(temp);
 
                 InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(getView().getWindowToken() , 0);
