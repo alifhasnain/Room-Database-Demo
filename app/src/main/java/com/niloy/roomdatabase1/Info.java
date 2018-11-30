@@ -12,8 +12,7 @@ public class Info {
 
     //We must have one primary on entity
     private int age;
-    @PrimaryKey
-    @NonNull
+
     private String id;
 
     //We can customize Table Column name with this
@@ -21,8 +20,10 @@ public class Info {
     private String email;
 
     @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
-    @NonNull
     private byte[] image;
+
+    @PrimaryKey(autoGenerate = true)
+    private int primaryKey = 0;
 
     public Info() {
 
@@ -36,8 +37,18 @@ public class Info {
         this.image = image;
     }
 
+    public Info(String name, int age, String id, String email, byte[] image, int primaryKey) {
+        this.name = name;
+        this.age = age;
+        this.id = id;
+        this.email = email;
+        this.image = image;
+        this.primaryKey = primaryKey;
+    }
+
     public String getName() {
         return name;
+
     }
 
     public void setName(String name) {
@@ -74,5 +85,13 @@ public class Info {
 
     public void setImage(byte[] image) {
         this.image = image;
+    }
+
+    public int getPrimaryKey() {
+        return primaryKey;
+    }
+
+    public void setPrimaryKey(int primaryKey) {
+        this.primaryKey = primaryKey;
     }
 }

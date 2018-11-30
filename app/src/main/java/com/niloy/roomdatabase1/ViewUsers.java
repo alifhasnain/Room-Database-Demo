@@ -33,6 +33,8 @@ public class ViewUsers extends Fragment implements RecyclerItemTouchHelper.Recyc
 
     private static final String TAG = "ViewUsers";
 
+    static List<Info> allInfos;
+
     static RecyclerViewAdapter adapter;
 
     static ArrayList<String> readNames;
@@ -65,8 +67,6 @@ public class ViewUsers extends Fragment implements RecyclerItemTouchHelper.Recyc
 
         //List<Info> allInfos = MainActivity.database.myDao().readUsers();
 
-        List<Info> allInfos = null;
-
         try {
             allInfos = DatabaseOperationInThread.readAllUsers();
         }
@@ -88,13 +88,6 @@ public class ViewUsers extends Fragment implements RecyclerItemTouchHelper.Recyc
             readId.add(i.getId());
             readEmail.add(i.getEmail());
             readImages.add(i.getImage());
-        }
-
-        for(Info i : allInfos)    {
-            Log.d(TAG, "showRecyclerView: duck");
-            System.out.println(i.getImage());
-            System.out.println(i.getAge());
-            System.out.println(i.getEmail());
         }
 
         Toast.makeText(getActivity(), "Click To Edit\nSwipe Delete", Toast.LENGTH_SHORT).show();
@@ -147,12 +140,7 @@ public class ViewUsers extends Fragment implements RecyclerItemTouchHelper.Recyc
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
 
-        Info temp = new Info();
-        temp.setName(readNames.get(position));
-        temp.setAge(Integer.parseInt(readAge.get(position)));
-        temp.setId(readId.get(position));
-        temp.setEmail(readEmail.get(position));
-        temp.setImage(readImages.get(position));
+        Info temp = allInfos.get(position);
 
         deleteWithSwipeAndRefresh(temp ,getContext() , position);
     }

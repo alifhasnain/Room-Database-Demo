@@ -63,7 +63,7 @@ public class EditInfo extends Fragment {
 
         update = view.findViewById(R.id.update);
 
-        final Info info = RecyclerViewAdapter.temp;
+        Info info = RecyclerViewAdapter.temp;
 
         name.getEditText().setText(info.getName());
         age.getEditText().setText(Integer.toString(info.getAge()));
@@ -111,7 +111,7 @@ public class EditInfo extends Fragment {
             public void onClick(View view) {
 
 
-                Info temp = new Info(name.getEditText().getText().toString() , Integer.parseInt(age.getEditText().getText().toString()) , id.getEditText().getText().toString() , email.getEditText().getText().toString() , image);
+                Info temp = new Info(name.getEditText().getText().toString() , Integer.parseInt(age.getEditText().getText().toString()) , id.getEditText().getText().toString() , email.getEditText().getText().toString() , image , RecyclerViewAdapter.temp.getPrimaryKey());
                 //MainActivity.database.myDao().updateItem(temp);
                 DatabaseOperationInThread.updateData(temp);
 

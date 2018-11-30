@@ -66,7 +66,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             @Override
             public void onClick(View view) {
 
-                temp = new Info(mNames.get(i) , Integer.parseInt(mAges.get(i)) , mId.get(i) , emails.get(i) , imageByteArrays.get(i) );
+                //temp = new Info(mNames.get(i) , Integer.parseInt(mAges.get(i)) , mId.get(i) , emails.get(i) , imageByteArrays.get(i) );
+                temp = ViewUsers.allInfos.get(i);
 
                 MainActivity.fragmentManager.beginTransaction().replace(R.id.fragment_container , new EditInfo())
                         .addToBackStack(null).commit();
