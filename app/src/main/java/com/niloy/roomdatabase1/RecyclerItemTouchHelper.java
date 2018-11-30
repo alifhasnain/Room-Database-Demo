@@ -1,9 +1,10 @@
 package com.niloy.roomdatabase1;
 
 import android.graphics.Canvas;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import android.view.View;
+
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by ravi on 29/09/17.

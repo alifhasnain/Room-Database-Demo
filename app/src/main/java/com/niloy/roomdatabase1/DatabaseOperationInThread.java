@@ -1,11 +1,8 @@
 package com.niloy.roomdatabase1;
 
-import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Handler;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class DatabaseOperationInThread {
 

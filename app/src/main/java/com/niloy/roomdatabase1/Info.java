@@ -3,7 +3,6 @@ package com.niloy.roomdatabase1;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-import androidx.annotation.NonNull;
 
 @Entity(tableName = "infos")
 public class Info {
@@ -27,14 +26,6 @@ public class Info {
 
     public Info() {
 
-    }
-
-    public Info(String name, int age, @NonNull String id, String email, byte[] image) {
-        this.name = name;
-        this.age = age;
-        this.id = id;
-        this.email = email;
-        this.image = image;
     }
 
     public Info(String name, int age, String id, String email, byte[] image, int primaryKey) {
