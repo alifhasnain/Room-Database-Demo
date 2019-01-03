@@ -25,28 +25,26 @@ public class SplashScreen extends AppCompatActivity {
         loadAnimation = (AnimationDrawable)image.getBackground();
         loadAnimation.start();
 
-        TextView splashText = findViewById(R.id.splashText);
-        TextView splashText2 = findViewById(R.id.splashText2);
-
-        /*splashText.animate().alpha(1f).setDuration(2000);
-        splashText2.animate().alpha(1f).setDuration(2000);*/
-
         //This is for Splash Screen Of App
-        Thread splashScreenThread = new Thread()    {
-            @Override
-            public void run() {
-                try {
-                    sleep(3000);
-                    Intent intent = new Intent(SplashScreen.this , MainActivity.class);
-                    startActivity(intent);
-                    finish();
+        SplashAnimation splashAnimation = new SplashAnimation();
+        splashAnimation.start();
+    }
 
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+    class SplashAnimation extends Thread implements Runnable   {
+
+        @Override
+        public void run() {
+            try {
+                //In here thread will sleep for 3 second
+                sleep(3000);
+                Intent intent = new Intent(SplashScreen.this , MainActivity.class);
+                startActivity(intent);
+                //We finished the activity so we won't be back here when back key is pressed
+                finish();
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        };
-
-        splashScreenThread.start();
+        }
     }
 }

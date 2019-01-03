@@ -25,8 +25,6 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 public class ViewUsers extends Fragment implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener{
 
-    private static final String TAG = "ViewUsers";
-
     static List<Info> allInfos;
 
     static RecyclerViewAdapter adapter;
@@ -40,6 +38,8 @@ public class ViewUsers extends Fragment implements RecyclerItemTouchHelper.Recyc
     View view;
 
     RecyclerView recyclerView;
+
+    private Snackbar sb;
 
     public ViewUsers() {
         // Required empty public constructor
@@ -57,8 +57,34 @@ public class ViewUsers extends Fragment implements RecyclerItemTouchHelper.Recyc
         return view;
     }
 
+    @Override
+    public void onStop() {
+        try {
+            sb.dismiss();
+        }
+        catch (NullPointerException e)  {
+            e.printStackTrace();
+        }
+        super.onStop();
+    }
+
     public void showRecyclerView(View view) {
 
+        updateRecyclerAdapterData();
+
+        Toast.makeText(view.getContext(), "Click To Edit\nSwipe Delete", Toast.LENGTH_SHORT).show();
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(adapter);
+
+
+        //Set Item Touch Helper
+        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT , this);
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
+
+    }
+
+    public void updateRecyclerAdapterData() {
         //List<Info> allInfos = MainActivity.database.myDao().readUsers();
 
         try {
@@ -83,18 +109,7 @@ public class ViewUsers extends Fragment implements RecyclerItemTouchHelper.Recyc
             readEmail.add(i.getEmail());
             readImages.add(i.getImage());
         }
-
-        Toast.makeText(getActivity(), "Click To Edit\nSwipe Delete", Toast.LENGTH_SHORT).show();
         adapter = new RecyclerViewAdapter(getActivity() , readNames , readAge , readId , readEmail , readImages );
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(adapter);
-
-
-        //Set Item Touch Helper
-        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT , this);
-        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
-
     }
 
     /*//This will delete the item and update RecyclerView
@@ -129,8 +144,8 @@ public class ViewUsers extends Fragment implements RecyclerItemTouchHelper.Recyc
                 })
                 .setNegativeButton("No",null).show();
     }*/
-
     //This will delete items on swiped
+
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
 
@@ -142,6 +157,8 @@ public class ViewUsers extends Fragment implements RecyclerItemTouchHelper.Recyc
 
     public void deleteWithSwipeAndRefresh(final Info info , Context context , final int position)  {
 
+        DatabaseOperationInThread.deleteData(info);
+
         //Delete Item From the position
         readNames.remove(position);
         readAge.remove(position);
@@ -152,10 +169,11 @@ public class ViewUsers extends Fragment implements RecyclerItemTouchHelper.Recyc
 
 
 
-        Snackbar sb = Snackbar.make(recyclerView , "Item Deleted!" , Snackbar.LENGTH_LONG)
+        sb = Snackbar.make(view , "Item Deleted!" , Snackbar.LENGTH_LONG)
                 .setAction("Undo!", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        DatabaseOperationInThread.addData(info);
                         readNames.add(position , info.getName());
                         readAge.add(position , String.valueOf(info.getAge()));
                         readId.add(position , info.getId());
@@ -165,19 +183,17 @@ public class ViewUsers extends Fragment implements RecyclerItemTouchHelper.Recyc
                     }
                 });
 
-        sb.addCallback(new Snackbar.Callback()  {
+        /*sb.addCallback(new Snackbar.Callback()  {
             @Override
             public void onDismissed(Snackbar transientBottomBar, int event) {
                 super.onDismissed(transientBottomBar, event);
                 if(event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT)    {
                     //This is going to delete item from database
                     //MainActivity.database.myDao().deleteItem(info);
-                    DatabaseOperationInThread.deleteData(info);
-                    adapter.notifyDataSetChanged();
-                    adapter.notifyItemChanged(position);
+                    adapter.notifyItemRemoved(position);
                 }
             }
-        });
+        });*/
         sb.show();
     }
 }

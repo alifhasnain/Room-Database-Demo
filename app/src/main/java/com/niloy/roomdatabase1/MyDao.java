@@ -15,7 +15,11 @@ public interface MyDao {
     @Insert
     public void addInfos(Info info);
 
-    @Query("select * from infos")
+    /*@Query("select * from infos")
+    public List<Info> readUsers();*/
+
+    //This is for sorted read
+    @Query("select * from infos order by name")
     public List<Info> readUsers();
 
     @Delete
