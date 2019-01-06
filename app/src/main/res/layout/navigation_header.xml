@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="176dp"
+    android:background="@drawable/cornered_stairs"
+    android:gravity="bottom"
+    android:orientation="vertical"
+    android:paddingLeft="15dp"
+    android:paddingBottom="5dp"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/circular_image"
+        android:src="@drawable/photo"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        app:civ_border_color="@color/design_default_color_primary"
+        app:civ_border_width="3dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Alif Hasnain"
+        android:textColor="#000000" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="hasnain.alif20@gmail.com"
+        android:textColor="#000000" />
+</LinearLayout>

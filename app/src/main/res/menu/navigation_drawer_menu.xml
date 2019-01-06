@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/add_users"
+            android:title="Add User"
+            android:icon="@drawable/ic_add_user"/>
+        <item
+            android:id="@+id/view_users"
+            android:title="Users"
+            android:icon="@drawable/ic_users"/>
+    </group>
+
+    <item android:title="About">
+        <menu>
+            <item
+                android:id="@+id/about_dev"
+                android:title="About Dev"
+                android:icon="@drawable/ic_about"/>
+            <item
+                android:id="@+id/exit"
+                android:title="Exit"
+                android:icon="@drawable/ic_exit"/>
+        </menu>
+    </item>
+</menu>
