@@ -4,8 +4,6 @@ package com.niloy.roomdatabase1;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -103,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Fragment currentFragment = this.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
 
-        if(currentFragment instanceof ViewUsers) {
+        if(currentFragment instanceof ViewUsers || currentFragment instanceof AddUserInfo) {
             if(currentTimeInMillis + 2000 > System.currentTimeMillis()) {
                 finish();
             }
