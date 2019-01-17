@@ -1,6 +1,7 @@
 package com.niloy.roomdatabase1;
 
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -24,6 +25,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import static android.app.Activity.RESULT_OK;
@@ -54,6 +56,8 @@ public class AddUserInfo extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_add_user_info, container, false);
+
+        changeToolbarTitle();
 
         name = view.findViewById(R.id.name);
         age = view.findViewById(R.id.age);
@@ -177,7 +181,6 @@ public class AddUserInfo extends Fragment {
     }
 
     public void resizeAndSetImage(Uri imageUri)    {
-        String path = "";
         try {
             Bitmap myImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver() , imageUri);
             int h = myImage.getHeight();
@@ -185,6 +188,16 @@ public class AddUserInfo extends Fragment {
             Bitmap resizedImage = Bitmap.createScaledBitmap(myImage , w/3 , h/3 , true);
             profile.setImageBitmap(resizedImage);
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void changeToolbarTitle()    {
+        try {
+            Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+            toolbar.setTitle("Add Information");
+        }
+        catch (Exception e )    {
             e.printStackTrace();
         }
     }

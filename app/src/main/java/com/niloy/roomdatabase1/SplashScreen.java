@@ -35,7 +35,7 @@ public class SplashScreen extends AppCompatActivity {
         public void run() {
             try {
                 //In here thread will sleep for 3 second
-                sleep(3000);
+                sleep(2000);
                 Intent intent = new Intent(SplashScreen.this , MainActivity.class);
                 startActivity(intent);
                 //We finished the activity so we won't be back here when back key is pressed

@@ -2,6 +2,7 @@ package com.niloy.roomdatabase1;
 
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -27,7 +29,7 @@ public class ViewUsers extends Fragment implements RecyclerItemTouchHelper.Recyc
 
     static List<Info> allInfos;
 
-    static RecyclerViewAdapter adapter;
+    RecyclerViewAdapter adapter;
 
     static ArrayList<String> readNames;
     static ArrayList<String> readAge;
@@ -52,6 +54,13 @@ public class ViewUsers extends Fragment implements RecyclerItemTouchHelper.Recyc
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_view_users, container, false);
         recyclerView = view.findViewById(R.id.recycler_view);
+
+        changeToolbarTitle();
+
+        if(!MainActivity.snackBarIsShown)   {
+            MainActivity.snackBarIsShown = true;
+            showSnackbar(view,"Click to edit\nSwipe to delete");
+        }
         showRecyclerView(view);
 
         return view;
@@ -72,7 +81,6 @@ public class ViewUsers extends Fragment implements RecyclerItemTouchHelper.Recyc
 
         updateRecyclerAdapterData();
 
-        Toast.makeText(view.getContext(), "Click To Edit\nSwipe Delete", Toast.LENGTH_SHORT).show();
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
@@ -110,6 +118,9 @@ public class ViewUsers extends Fragment implements RecyclerItemTouchHelper.Recyc
             readImages.add(i.getImage());
         }
         adapter = new RecyclerViewAdapter(getActivity() , readNames , readAge , readId , readEmail , readImages );
+        if(adapter.getItemCount()==0)   {
+            recyclerView.setBackgroundResource(R.drawable.empty_data);
+        }
     }
 
     /*//This will delete the item and update RecyclerView
@@ -195,5 +206,29 @@ public class ViewUsers extends Fragment implements RecyclerItemTouchHelper.Recyc
             }
         });*/
         sb.show();
+
+        if(adapter.getItemCount()==0)   {
+            recyclerView.setBackgroundResource(R.drawable.empty_data);
+        }
+    }
+
+    private void showSnackbar(View view,String msg) {
+        sb = Snackbar.make(view,msg,10000).setAction("Okay", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        sb.show();
+    }
+
+    private void changeToolbarTitle()    {
+        try {
+            Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+            toolbar.setTitle("All Information");
+        }
+        catch (Exception e )    {
+            e.printStackTrace();
+        }
     }
 }

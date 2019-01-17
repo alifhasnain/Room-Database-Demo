@@ -25,6 +25,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import static android.app.Activity.RESULT_OK;
@@ -56,6 +57,8 @@ public class EditInfo extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_edit_info, container, false);
+
+        changeToolbarTitle();
 
         name = view.findViewById(R.id.name);
         age = view.findViewById(R.id.age);
@@ -177,6 +180,15 @@ public class EditInfo extends Fragment {
             image = convertToByteArray(vImageView);
 
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private void changeToolbarTitle()    {
+        try {
+            Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+            toolbar.setTitle("Edit Information");
+        }
+        catch (Exception e )    {
             e.printStackTrace();
         }
     }

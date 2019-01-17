@@ -1,13 +1,16 @@
 package com.niloy.roomdatabase1;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -20,6 +23,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.room.Room;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    public static boolean snackBarIsShown;
 
     private long currentTimeInMillis;
 
@@ -60,6 +65,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        snackBarIsShown = false;
+
         toolbar = findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
@@ -77,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if(savedInstanceState!=null)    {
                 return;
             }
+            getSupportActionBar().setTitle("All Information");
             fragmentManager.beginTransaction().replace(R.id.fragment_container,new ViewUsers(),"T_Home_Fragemnt").commit();
         }
 
@@ -147,6 +155,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
     private void openLinkInBrowser(String url)  {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW,Uri.parse(url));
         startActivity(browserIntent);
