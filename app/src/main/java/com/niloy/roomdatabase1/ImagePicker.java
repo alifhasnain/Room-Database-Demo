@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
 public class ImagePicker extends AppCompatActivity {
 
@@ -40,7 +41,9 @@ public class ImagePicker extends AppCompatActivity {
             File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
             try {
                 File file = File.createTempFile("IMG_", ".jpg", storageDir);
-                uriPhoto = Uri.fromFile(file);
+
+                //uriPhoto = Uri.fromFile(file);
+                uriPhoto = FileProvider.getUriForFile(this,"com.niloy.roomdatabase1.fileProvider",file);
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, uriPhoto);
                 startActivityForResult(intent, REQUEST_TAKE_PHOTO);
             } catch (IOException e) {

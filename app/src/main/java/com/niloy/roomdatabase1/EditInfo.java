@@ -23,6 +23,10 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import androidx.appcompat.widget.Toolbar;
@@ -42,7 +46,8 @@ public class EditInfo extends Fragment {
     TextInputLayout email;
     ImageView vImageView;
 
-    byte[] image;
+    String imageName;
+    Bitmap profileImageBitmap;
 
     Button update;
     AlertDialog dialog;
@@ -75,9 +80,9 @@ public class EditInfo extends Fragment {
         id.getEditText().setText(info.getId());
         email.getEditText().setText(info.getEmail());
         //Set ImageView
-        image = info.getImage();
-        Bitmap bitmap = BitmapFactory.decodeByteArray(image , 0 , image.length);
-        vImageView.setImageBitmap(bitmap);
+        imageName = info.getImageName();
+        profileImageBitmap = getBitmap(imageName);
+        vImageView.setImageBitmap(profileImageBitmap);
 
 
         vImageView.setOnClickListener(new View.OnClickListener() {
@@ -116,9 +121,11 @@ public class EditInfo extends Fragment {
             public void onClick(View view) {
 
 
-                Info temp = new Info(name.getEditText().getText().toString() , Integer.parseInt(age.getEditText().getText().toString()) , id.getEditText().getText().toString() , email.getEditText().getText().toString() , image , RecyclerViewAdapter.temp.getPrimaryKey());
+                Info temp = new Info(name.getEditText().getText().toString() , Integer.parseInt(age.getEditText().getText().toString()) , id.getEditText().getText().toString() , email.getEditText().getText().toString() , imageName , RecyclerViewAdapter.temp.getPrimaryKey());
                 //MainActivity.database.myDao().updateItem(temp);
                 DatabaseOperationInThread.updateData(temp);
+
+                saveBitmapOnInternalStorage(imageName);
 
                 InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(getView().getWindowToken() , 0);
@@ -153,7 +160,12 @@ public class EditInfo extends Fragment {
             case 2:
                 if(resultCode==RESULT_OK)   {
                     imageUri = data.getData();
-                    resizeAndSetImage(imageUri);
+                    try {
+                        profileImageBitmap = AddUserInfo.scaledBitmap(MediaStore.Images.Media.getBitmap(getContext().getContentResolver(),imageUri),999f,true);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    vImageView.setImageBitmap(profileImageBitmap);
                     //profile.setImageURI(imageUri);
                 }
                 else if(resultCode==420) {
@@ -168,21 +180,33 @@ public class EditInfo extends Fragment {
         }
     }
 
-    public void resizeAndSetImage(Uri imageUri)    {
-        String path = "";
-        try {
-            Bitmap myImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver() , imageUri);
-            int h = myImage.getHeight();
-            int w = myImage.getWidth();
-            Bitmap resizedImage = Bitmap.createScaledBitmap(myImage , w/3 , h/3 , true);
-            vImageView.setImageBitmap(resizedImage);
-            //To update the value of image
-            image = convertToByteArray(vImageView);
+    public Bitmap getBitmap(String fileName)   {
+        File imageFilePath = new File(MainActivity.defaultProfileImageDir,fileName);
+        FileInputStream inputStream;
 
-        } catch (IOException e) {
+        try {
+            inputStream = new FileInputStream(imageFilePath);
+            return BitmapFactory.decodeStream(inputStream);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private void saveBitmapOnInternalStorage(String randomFileName)   {
+        File imageFileDir = new File(MainActivity.defaultProfileImageDir,randomFileName);
+        FileOutputStream outputStream;
+
+        try {
+            outputStream = new FileOutputStream(imageFileDir);
+            profileImageBitmap.compress(Bitmap.CompressFormat.PNG,100,outputStream);
+            outputStream.close();
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     private void changeToolbarTitle()    {
         try {
             Toolbar toolbar = getActivity().findViewById(R.id.toolbar);

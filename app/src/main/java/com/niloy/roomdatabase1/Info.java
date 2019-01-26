@@ -18,8 +18,11 @@ public class Info {
     @ColumnInfo(name = "user_email")
     private String email;
 
-    @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
-    private byte[] image;
+    /*@ColumnInfo(typeAffinity = ColumnInfo.BLOB)
+    private byte[] image;*/
+
+    @ColumnInfo(name = "imagae_name")
+    private String imageName;
 
     @PrimaryKey(autoGenerate = true)
     private int primaryKey = 0;
@@ -28,12 +31,12 @@ public class Info {
 
     }
 
-    public Info(String name, int age, String id, String email, byte[] image, int primaryKey) {
+    public Info(String name, int age, String id, String email,String imageName, int primaryKey) {
         this.name = name;
         this.age = age;
         this.id = id;
         this.email = email;
-        this.image = image;
+        this.imageName = imageName;
         this.primaryKey = primaryKey;
     }
 
@@ -44,6 +47,14 @@ public class Info {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getImageName() {
+        return imageName;
+    }
+
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
     }
 
     public int getAge() {
@@ -70,13 +81,13 @@ public class Info {
         this.email = email;
     }
 
-    public byte[] getImage() {
+    /*public byte[] getImage() {
         return image;
     }
 
     public void setImage(byte[] image) {
         this.image = image;
-    }
+    }*/
 
     public int getPrimaryKey() {
         return primaryKey;

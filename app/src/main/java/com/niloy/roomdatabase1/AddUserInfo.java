@@ -1,13 +1,11 @@
 package com.niloy.roomdatabase1;
 
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -22,8 +20,10 @@ import android.widget.Toast;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 
-import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Random;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -43,8 +43,10 @@ public class AddUserInfo extends Fragment {
     ImageView profile;
 
     Button save;
-    Uri imageUri;
+    Bitmap profileImageBitmap;
     AlertDialog dialog;
+
+    String randomFileName;
 
     public AddUserInfo() {
         // Required empty public constructor
@@ -65,6 +67,8 @@ public class AddUserInfo extends Fragment {
         email = view.findViewById(R.id.email_address);
         save = view.findViewById(R.id.save);
         profile = view.findViewById(R.id.profile_image);
+
+        randomFileName = generateRandomSting();
 
         profile.setOnClickListener(new View.OnClickListener() {
 
@@ -124,15 +128,13 @@ public class AddUserInfo extends Fragment {
                     userInfos.setAge(userAge);
                     userInfos.setId(userId);
                     userInfos.setEmail(userMail);
-                    //Add Image
-                    Bitmap bitmap = ((BitmapDrawable) profile.getDrawable()).getBitmap();
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                    byte[] imageInByte = baos.toByteArray();
-                    userInfos.setImage(imageInByte);
+                    //Add Image Name
+                    userInfos.setImageName(randomFileName);
 
                     //MainActivity.database.myDao().addInfos(userInfos);
                     DatabaseOperationInThread.addData(userInfos);
+
+                    saveBitmapOnInternalStorage();
 
                     //This will hide keyboard
                     InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -146,6 +148,8 @@ public class AddUserInfo extends Fragment {
                     email.getEditText().setText("");
                     profile.setImageResource(R.drawable.upload);
 
+                    //For generating random file name again
+                    randomFileName = generateRandomSting();
                 }
                 else    {
                     //This will hide keyboard
@@ -164,8 +168,13 @@ public class AddUserInfo extends Fragment {
         {
             case 2:
                 if(resultCode==RESULT_OK)   {
-                    imageUri = data.getData();
-                    resizeAndSetImage(imageUri);
+                    Uri imageUri = data.getData();
+                    try {
+                        profileImageBitmap = scaledBitmap(MediaStore.Images.Media.getBitmap(getContext().getContentResolver(),imageUri),999f,true);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    profile.setImageBitmap(profileImageBitmap);
                     //profile.setImageURI(imageUri);
                 }
                 else if(resultCode==420) {
@@ -180,7 +189,7 @@ public class AddUserInfo extends Fragment {
         }
     }
 
-    public void resizeAndSetImage(Uri imageUri)    {
+    /*public void resizeAndSetImage(Uri imageUri)    {
         try {
             Bitmap myImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver() , imageUri);
             int h = myImage.getHeight();
@@ -190,6 +199,42 @@ public class AddUserInfo extends Fragment {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }*/
+
+    public static Bitmap scaledBitmap(Bitmap realImage,Float maxImageSizeInKb , boolean filter)    {
+        float ratio = Math.min(
+                maxImageSizeInKb / realImage.getWidth(),
+                maxImageSizeInKb / realImage.getHeight());
+        int width = Math.round( ratio * realImage.getWidth());
+        int height = Math.round( ratio * realImage.getHeight());
+
+        return  Bitmap.createScaledBitmap(realImage, width,
+                height, filter);
+    }
+
+    private void saveBitmapOnInternalStorage()   {
+        File imageFileDir = new File(MainActivity.defaultProfileImageDir,randomFileName);
+        FileOutputStream outputStream;
+
+        try {
+            outputStream = new FileOutputStream(imageFileDir);
+            profileImageBitmap.compress(Bitmap.CompressFormat.PNG,100,outputStream);
+            outputStream.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String generateRandomSting()   {
+        String ALPHABETS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        StringBuilder str = new StringBuilder();
+        Random random = new Random();
+        while (str.length()<=20)    {
+            int index = (int)(random.nextFloat()*ALPHABETS.length());   //Used float for better random
+            str.append(ALPHABETS.charAt(index));
+        }
+        return str.toString();
     }
 
     private void changeToolbarTitle()    {

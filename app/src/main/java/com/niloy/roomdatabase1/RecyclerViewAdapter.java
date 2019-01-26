@@ -11,6 +11,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
@@ -24,7 +27,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private ArrayList<String> mAges;
     private ArrayList<String> mId;
     private ArrayList<String> emails;
-    private ArrayList<byte[]> imageByteArrays;
+    private ArrayList<String> imageName;
     RelativeLayout foreground,background;
 
     static Info temp;
@@ -32,13 +35,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private Context mContext ;
 
     //This is the constructor
-    public RecyclerViewAdapter(Context mContext , ArrayList<String> mNames, ArrayList<String> mAges, ArrayList<String> mId, ArrayList<String> emails , ArrayList<byte[]> images) {
+    public RecyclerViewAdapter(Context mContext , ArrayList<String> mNames, ArrayList<String> mAges, ArrayList<String> mId, ArrayList<String> emails , ArrayList<String> images) {
         this.mContext = mContext;
         this.mNames = mNames;
         this.mAges = mAges;
         this.mId = mId;
         this.emails = emails;
-        this.imageByteArrays = images;
+        this.imageName = images;
     }
 
 
@@ -55,19 +58,21 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         Log.d(TAG,"onBindViewHolder: called.");
 
         //Convert byte[] to imageView
-        Bitmap bitmap = BitmapFactory.decodeByteArray(imageByteArrays.get(i) ,0 , imageByteArrays.get(i).length);
+        Bitmap bitmap = getBitmap(imageName.get(i));
 
         viewHolder.name.setText(mNames.get(i));
         viewHolder.age.setText("Age : " + mAges.get(i));
         viewHolder.id.setText("ID : " + mId.get(i));
         viewHolder.email.setText("Email : " + emails.get(i));
+        viewHolder.email.setSelected(true);
+        viewHolder.email.setSingleLine();
         viewHolder.profile.setImageBitmap(bitmap);
 
         viewHolder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                //temp = new Info(mNames.get(i) , Integer.parseInt(mAges.get(i)) , mId.get(i) , emails.get(i) , imageByteArrays.get(i) );
+                //temp = new Info(mNames.get(i) , Integer.parseInt(mAges.get(i)) , mId.get(i) , emails.get(i) , imageName.get(i) );
                 temp = ViewUsers.allInfos.get(i);
 
                 MainActivity.fragmentManager.beginTransaction().replace(R.id.fragment_container , new EditInfo())
@@ -85,6 +90,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 return true;
             }
         });*/
+    }
+
+    public Bitmap getBitmap(String fileName)   {
+        File imageFilePath = new File(MainActivity.defaultProfileImageDir,fileName);
+        FileInputStream inputStream;
+
+        try {
+            inputStream = new FileInputStream(imageFilePath);
+            return BitmapFactory.decodeStream(inputStream);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override

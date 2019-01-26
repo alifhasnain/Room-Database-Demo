@@ -2,7 +2,6 @@ package com.niloy.roomdatabase1;
 
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +10,7 @@ import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,13 +35,15 @@ public class ViewUsers extends Fragment implements RecyclerItemTouchHelper.Recyc
     static ArrayList<String> readAge;
     static ArrayList<String> readId;
     static ArrayList<String> readEmail;
-    static ArrayList<byte[]> readImages;
+    static ArrayList<String> readImages;
 
     View view;
 
     RecyclerView recyclerView;
 
     private Snackbar sb;
+
+    String tempImage;
 
     public ViewUsers() {
         // Required empty public constructor
@@ -57,18 +59,21 @@ public class ViewUsers extends Fragment implements RecyclerItemTouchHelper.Recyc
 
         changeToolbarTitle();
 
-        if(!MainActivity.snackBarIsShown)   {
+        showRecyclerView(view);
+
+        if(!MainActivity.snackBarIsShown && adapter.getItemCount()>0)   {
             MainActivity.snackBarIsShown = true;
             showSnackbar(view,"Click to edit\nSwipe to delete");
         }
-        showRecyclerView(view);
-
         return view;
     }
 
     @Override
     public void onStop() {
         try {
+            if(tempImage!=null) {
+                deleteFile(tempImage);
+            }
             sb.dismiss();
         }
         catch (NullPointerException e)  {
@@ -115,11 +120,16 @@ public class ViewUsers extends Fragment implements RecyclerItemTouchHelper.Recyc
             readAge.add(Integer.toString(i.getAge()));
             readId.add(i.getId());
             readEmail.add(i.getEmail());
-            readImages.add(i.getImage());
+            readImages.add(i.getImageName());
         }
         adapter = new RecyclerViewAdapter(getActivity() , readNames , readAge , readId , readEmail , readImages );
         if(adapter.getItemCount()==0)   {
-            recyclerView.setBackgroundResource(R.drawable.empty_data);
+            Snackbar.make(view,"No Data!",2500).setAction("Okay", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            }).show();
         }
     }
 
@@ -176,6 +186,7 @@ public class ViewUsers extends Fragment implements RecyclerItemTouchHelper.Recyc
         readId.remove(position);
         readEmail.remove(position);
         readImages.remove(position);
+        tempImage = info.getImageName();
         adapter.notifyDataSetChanged();
 
 
@@ -189,27 +200,23 @@ public class ViewUsers extends Fragment implements RecyclerItemTouchHelper.Recyc
                         readAge.add(position , String.valueOf(info.getAge()));
                         readId.add(position , info.getId());
                         readEmail.add(position , info.getEmail());
-                        readImages.add(position,info.getImage());
+                        readImages.add(position,info.getImageName());
+                        tempImage = null;
                         adapter.notifyDataSetChanged();
                     }
                 });
 
-        /*sb.addCallback(new Snackbar.Callback()  {
+        sb.addCallback(new Snackbar.Callback()  {
             @Override
             public void onDismissed(Snackbar transientBottomBar, int event) {
                 super.onDismissed(transientBottomBar, event);
                 if(event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT)    {
-                    //This is going to delete item from database
-                    //MainActivity.database.myDao().deleteItem(info);
-                    adapter.notifyItemRemoved(position);
+                    deleteFile(tempImage);
+                    tempImage = null;
                 }
             }
-        });*/
+        });
         sb.show();
-
-        if(adapter.getItemCount()==0)   {
-            recyclerView.setBackgroundResource(R.drawable.empty_data);
-        }
     }
 
     private void showSnackbar(View view,String msg) {
@@ -222,6 +229,10 @@ public class ViewUsers extends Fragment implements RecyclerItemTouchHelper.Recyc
         sb.show();
     }
 
+    private void deleteFile(String fileName)    {
+        File file = new File(MainActivity.defaultProfileImageDir,fileName);
+        file.delete();
+    }
     private void changeToolbarTitle()    {
         try {
             Toolbar toolbar = getActivity().findViewById(R.id.toolbar);

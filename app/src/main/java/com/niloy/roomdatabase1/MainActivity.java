@@ -1,16 +1,15 @@
 package com.niloy.roomdatabase1;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
+
+import java.io.File;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -30,6 +29,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public static FragmentManager fragmentManager;
     public static MyDatabase database;
+
+    static File defaultProfileImageDir;
 
     Toolbar toolbar;
     private DrawerLayout drawer;
@@ -64,6 +65,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        defaultProfileImageDir = new File(getFilesDir().getAbsolutePath() + "/profile_photos");
+        if(!defaultProfileImageDir.exists()) {
+            defaultProfileImageDir.mkdir();
+        }
 
         snackBarIsShown = false;
 
