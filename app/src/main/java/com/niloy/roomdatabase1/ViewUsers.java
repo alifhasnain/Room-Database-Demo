@@ -3,6 +3,7 @@ package com.niloy.roomdatabase1;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 
 /**
@@ -59,7 +61,9 @@ public class ViewUsers extends Fragment implements RecyclerItemTouchHelper.Recyc
 
         changeToolbarTitle();
 
-        showRecyclerView(view);
+        showRecyclerView();
+
+        pullToRefresh();
 
         if(!MainActivity.snackBarIsShown && adapter.getItemCount()>0)   {
             MainActivity.snackBarIsShown = true;
@@ -82,7 +86,7 @@ public class ViewUsers extends Fragment implements RecyclerItemTouchHelper.Recyc
         super.onStop();
     }
 
-    public void showRecyclerView(View view) {
+    public void showRecyclerView() {
 
         updateRecyclerAdapterData();
 
@@ -241,5 +245,22 @@ public class ViewUsers extends Fragment implements RecyclerItemTouchHelper.Recyc
         catch (Exception e )    {
             e.printStackTrace();
         }
+    }
+
+    private void pullToRefresh() {
+        final SwipeRefreshLayout pullToRefresh = view.findViewById(R.id.pull_to_refresh);
+        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                adapter.notifyDataSetChanged();
+                Handler timer = new Handler();
+                timer.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        pullToRefresh.setRefreshing(false);
+                    }
+                },1600);
+            }
+        });
     }
 }
